@@ -133,7 +133,8 @@ void rocksdb_hash::open_output(){
                 it.c_str(), ColumnFamilyOptions()));
 
         ColumnFamilyHandle* cf;
-        Status status = hash_db->CreateColumnFamily(ColumnFamilyOptions(), it, &cf);
+        Status status = hash_db->CreateColumnFamily(
+                            ColumnFamilyOptions(), it, &cf);
         o_handles.emplace_back(cf);
         if (!status.ok()) {
             if (log_lvl == ERROR) {
