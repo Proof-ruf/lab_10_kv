@@ -14,9 +14,9 @@ rocksdb_hash::rocksdb_hash(const std::string &_path_to_db,
                 it.c_str(), ColumnFamilyOptions()));
     }
 
-    Status s = DB::Open(
+    Status status = DB::Open(
             DBOptions(), _path_to_db, column_families, &handles, &input_db);
-    if (!s.ok()) {
+    if (!status.ok()) {
         if (log_lvl == ERROR) {
             BOOST_LOG_TRIVIAL(error) << "Error" << std::endl;
         }
@@ -133,9 +133,9 @@ void rocksdb_hash::open_output(){
                 it.c_str(), ColumnFamilyOptions()));
 
         ColumnFamilyHandle* cf;
-        Status s = hash_db->CreateColumnFamily(ColumnFamilyOptions(), it, &cf);
+        Status status = hash_db->CreateColumnFamily(ColumnFamilyOptions(), it, &cf);
         o_handles.emplace_back(cf);
-        if (!s.ok()) {
+        if (!status.ok()) {
             if (log_lvl == ERROR) {
                 BOOST_LOG_TRIVIAL(error) << "Error" << std::endl;
             }
