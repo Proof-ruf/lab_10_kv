@@ -16,8 +16,8 @@ rocksdb_hash::rocksdb_hash(const std::string &_path_to_db,
 
     s = DB::Open(
             DBOptions(), _path_to_db, column_families, &handles, &input_db);
-    if(!s.ok()){
-        if(log_lvl == ERROR) {
+    if (!s.ok()) {
+        if (log_lvl == ERROR) {
             BOOST_LOG_TRIVIAL(error) << "Error" << std::endl;
         }
     }
@@ -36,7 +36,8 @@ void rocksdb_hash::print_db(){
         for (; it->Valid(); it->Next())
         {
             BOOST_LOG_TRIVIAL(trace) << it->key().ToString()
-                                     << " : " << it->value().ToString() << std::endl;
+                                     << " : " << it->value().ToString()
+                                     << std::endl;
         }
     }
 }
@@ -52,7 +53,8 @@ void rocksdb_hash::print_output_db(){
         for (; it->Valid(); it->Next())
         {
             BOOST_LOG_TRIVIAL(trace) << it->key().ToString()
-                                     << " : " << it->value().ToString() << std::endl;
+                                     << " : " << it->value().ToString()
+                                     << std::endl;
         }
     }
 }
@@ -68,7 +70,8 @@ void rocksdb_hash::create_hash_db(){
             std::string value;
             hash_db->Put(WriteOptions(), o_handles[i], it->key().ToString(),
                          picosha2::hash256_hex_string(
-                                 it->key().ToString() + it->value().ToString()));
+                                 it->key().ToString() +
+                                 it->value().ToString()));
             it->Next();
         }
     }
@@ -76,15 +79,16 @@ void rocksdb_hash::create_hash_db(){
     for (iter->SeekToFirst(); iter->Valid(); iter->Next()) {
         hash_db->Put(WriteOptions(), iter->key().ToString(),
                      picosha2::hash256_hex_string(
-                             iter->key().ToString() + iter->value().ToString()));
+                             iter->key().ToString() +
+                             iter->value().ToString()));
     }
 }
 
 void rocksdb_hash::close_db(){
     for (auto handle : handles) {
         s = input_db->DestroyColumnFamilyHandle(handle);
-        if(!s.ok()){
-            if(log_lvl == ERROR) {
+        if (!s.ok()) {
+            if (log_lvl == ERROR) {
                 BOOST_LOG_TRIVIAL(error) << "Error" << std::endl;
             }
         }
@@ -95,8 +99,8 @@ void rocksdb_hash::close_db(){
     for (auto o_handle : o_handles) {
         if (o_handle->GetName() == DEFAULT) continue;
         s = hash_db->DestroyColumnFamilyHandle(o_handle);
-        if(!s.ok()){
-            if(log_lvl == ERROR) {
+        if (!s.ok()) {
+            if (log_lvl == ERROR) {
                 BOOST_LOG_TRIVIAL(error) << "Error" << std::endl;
             }
         }
@@ -109,8 +113,8 @@ void rocksdb_hash::open_output(){
     Options options;
     options.create_if_missing = true;
     Status s = DB::Open(options, path_to_output_db, &hash_db);
-    if(!s.ok()){
-        if(log_lvl == ERROR) {
+    if (!s.ok()) {
+        if (log_lvl == ERROR) {
             BOOST_LOG_TRIVIAL(error) << "Error" << std::endl;
         }
     }
@@ -131,8 +135,8 @@ void rocksdb_hash::open_output(){
         ColumnFamilyHandle* cf;
         s = hash_db->CreateColumnFamily(ColumnFamilyOptions(), it, &cf);
         o_handles.emplace_back(cf);
-        if(!s.ok()){
-            if(log_lvl == ERROR) {
+        if (!s.ok()) {
+            if (log_lvl == ERROR) {
                 BOOST_LOG_TRIVIAL(error) << "Error" << std::endl;
             }
         }
