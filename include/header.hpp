@@ -58,11 +58,10 @@ public:
 
     void open_output();
     void log_init();
-    void start(unsigned thread_count, std::string log_level);
+    void start(std::string log_level);
 
 
 private:
-    Status s;
     DB* input_db;
     DB* hash_db;
     std::string path_to_output_db;

@@ -36,6 +36,6 @@ int main(int argc, char **argv) {
     std::string pathToResult = PATH_TO_OUTPUT;
 
     rocksdb_hash db(pathToDB, pathToResult);
-    db.start(threadCount, logLevel);
+    db.start(logLevel);
     return 0;
 }

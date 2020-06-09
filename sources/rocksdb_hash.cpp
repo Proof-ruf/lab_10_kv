@@ -5,7 +5,7 @@ rocksdb_hash::rocksdb_hash(const std::string &_path_to_db,
                            const std::string &_path_to_output_db){
     log_init();
     path_to_output_db = _path_to_output_db;
-    s = input_db->ListColumnFamilies(
+    Status s = input_db->ListColumnFamilies(
             DBOptions(), _path_to_db, &list_column_families);
 
     for (auto it : list_column_families)
@@ -14,7 +14,7 @@ rocksdb_hash::rocksdb_hash(const std::string &_path_to_db,
                 it.c_str(), ColumnFamilyOptions()));
     }
 
-    s = DB::Open(
+    Status s = DB::Open(
             DBOptions(), _path_to_db, column_families, &handles, &input_db);
     if (!s.ok()) {
         if (log_lvl == ERROR) {
@@ -86,7 +86,7 @@ void rocksdb_hash::create_hash_db(){
 
 void rocksdb_hash::close_db(){
     for (auto handle : handles) {
-        s = input_db->DestroyColumnFamilyHandle(handle);
+        Status s = input_db->DestroyColumnFamilyHandle(handle);
         if (!s.ok()) {
             if (log_lvl == ERROR) {
                 BOOST_LOG_TRIVIAL(error) << "Error" << std::endl;
@@ -98,7 +98,7 @@ void rocksdb_hash::close_db(){
 
     for (auto o_handle : o_handles) {
         if (o_handle->GetName() == DEFAULT) continue;
-        s = hash_db->DestroyColumnFamilyHandle(o_handle);
+        Status s = hash_db->DestroyColumnFamilyHandle(o_handle);
         if (!s.ok()) {
             if (log_lvl == ERROR) {
                 BOOST_LOG_TRIVIAL(error) << "Error" << std::endl;
@@ -133,7 +133,7 @@ void rocksdb_hash::open_output(){
                 it.c_str(), ColumnFamilyOptions()));
 
         ColumnFamilyHandle* cf;
-        s = hash_db->CreateColumnFamily(ColumnFamilyOptions(), it, &cf);
+        Status s = hash_db->CreateColumnFamily(ColumnFamilyOptions(), it, &cf);
         o_handles.emplace_back(cf);
         if (!s.ok()) {
             if (log_lvl == ERROR) {
@@ -155,7 +155,7 @@ void rocksdb_hash::log_init()
     boost::log::add_common_attributes();
 }
 
-void rocksdb_hash::start(unsigned thread_count, std::string log_level){
+void rocksdb_hash::start(std::string log_level){
     log_lvl = log_level;
     this->print_db();
     this->create_hash_db();
