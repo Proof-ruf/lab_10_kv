@@ -41,6 +41,7 @@ void rocksdb_hash::print_db(){
         }
     }
 }
+
 void rocksdb_hash::print_output_db(){
     for (unsigned i = 0; i < o_handles.size(); ++i)
     {
@@ -58,6 +59,7 @@ void rocksdb_hash::print_output_db(){
         }
     }
 }
+
 void rocksdb_hash::create_hash_db(){
     open_output();
 

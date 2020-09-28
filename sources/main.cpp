@@ -19,10 +19,12 @@ int main(int argc, char **argv) {
         cout << desc << endl;
         return 1;
     }
+
     if (vm.count(HELP)) {
         cout << desc << endl;
         return 1;
     }
+
     if (!vm.count(LOG_LEVEL)
         || !vm.count(THREAD_COUNT)
         || !vm.count(OUTPUT)) {
@@ -30,10 +32,12 @@ int main(int argc, char **argv) {
         return 1;
     }
 
+
     std::string logLevel = vm[LOG_LEVEL].as<std::string>();
     std::size_t threadCount = vm[THREAD_COUNT].as<unsigned>();
     std::string pathToDB = vm[OUTPUT].as<std::string>();
     std::string pathToResult = PATH_TO_OUTPUT;
+
 
     rocksdb_hash db(pathToDB, pathToResult);
     db.start(logLevel);
